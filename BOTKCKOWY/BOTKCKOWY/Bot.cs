@@ -140,7 +140,7 @@ public class Bot
 
     public string Bot_Respond (string userinput)
     {
-        //Sprawdzamy ktory input z listy najbardziej pasuje do faktycznego
+        //Sprawdzamy ktory input z listy najbardziej pasuje do faktycznego, jakoś działa xD
         string output;
         Random rnd = new Random();
         int id = Analyse_Input(userinput);
