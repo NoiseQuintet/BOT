@@ -9,6 +9,8 @@ namespace KCK_BOT
         static void Main(string[] args)
         {
             Bot Bot = new Bot("Czarek");
+            StringSift2 SS2 = new StringSift2();
+           Console.WriteLine( SS2.Similarity("Zjem Cie Noobie","Zjem cie st"));
             Console.ReadLine();
         }
     }

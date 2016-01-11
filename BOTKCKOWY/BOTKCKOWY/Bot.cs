@@ -31,17 +31,17 @@ public class Bot
     public string Previous_Input { get; set; }
     public string Bot_Previous_Input { get; set; }
     public int Previous_Key { get; set; }
-    public static List<SynthPair> DataBase= new List<SynthPair>();
+    public static List<SynthPair> DataBase = new List<SynthPair>();
     public string Bot_Name { get; set; }
     public string User_Name { get; set; }
     public string Current_Topic { get; set; }
 
-     public Bot(string name)
-	{
+    public Bot(string name)
+    {
         Bot_Name = name;
         Set_Data_Base(@"\\files\students\s384122\Desktop\KCK\C# bot\KCKBOT\KCKBOT\Sprechen2.txt");
         Conversation();
-	}
+    }
     ~Bot()
     {
         Console.WriteLine("Umieram i już nigdy nie wrócę...");
@@ -49,22 +49,22 @@ public class Bot
     }
 
 
-    public void  Get_Data_Base()
+    public void Get_Data_Base()
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         foreach (SynthPair sp in DataBase)
         {
 
-                Console.WriteLine("NEW KEY: " + sp.Key_Sentence);
+            Console.WriteLine("NEW KEY: " + sp.Key_Sentence);
 
-            
-            foreach(string s in sp.In_Message)
+
+            foreach (string s in sp.In_Message)
             {
                 Console.WriteLine("IN: " + s);
             }
             foreach (string s in sp.Out_Message)
             {
-                Console.WriteLine("OUT: "+s);
+                Console.WriteLine("OUT: " + s);
             }
         }
     }
@@ -83,61 +83,78 @@ public class Bot
 
     public int Analyse_Input(string userinput)
     {
-        bool PrimeMethod=false;
         bool ifound = false;
         int pointer = -1;
-        int oldval = 0;
+        float oldval = 0;
+        float similarity = 0;
         int counter = 0;
-        userinput = Regex.Replace(userinput, @"\s +", " ");
-        userinput = StringExpansion.Remove_Special_Characters(userinput);
+        int KEYposition = 0;
+        int KEY;
+        StringSift2 SS2 = new StringSift2();
         foreach (SynthPair sp in DataBase)
         {
-           
-            for (int i=0; i<sp.In_Message.Count;++i)
+            KEY = 0;
+            foreach (string s in sp.In_Message)
             {
-                if (userinput.StringLike("%"+sp.In_Message[i]+"%")){
-                    ifound = true;
+                similarity = SS2.Similarity(userinput, s);
+                /*  Console.WriteLine("KEY: " + s + " USER: " + userinput + " SIMILARITY-> " + SS2.Similarity(s, userinput));
+                  Console.ReadLine();*/
+                if (similarity > oldval)
+                {
                     pointer = counter;
-                    if (pointer == 1)
-                    {
-                        string newstr=userinput.Substring(userinput.LastIndexOf(sp.In_Message[i]));
-
-                        int index = newstr.IndexOf(sp.In_Message[i]);
-                        User_Name= (index < 0)
-                                    ? newstr
-                                    : newstr.Remove(index, sp.In_Message[i].Length);
-                    }
-                    if (pointer == 5 || pointer == 8)
-                    {
-                        string newstr= userinput.Substring(userinput.LastIndexOf(sp.In_Message[i]));
-                        int index = newstr.IndexOf(sp.In_Message[i]);
-                        Current_Topic = (index < 0)
-                                    ? newstr
-                                    : newstr.Remove(index, sp.In_Message[i].Length);
-                    }
+                    oldval = similarity;
+                    KEYposition = KEY;
                 }
-                
-                if (ifound == true)
-                {
-                    
-                    break;
-                }
-               
+                ++KEY;
             }
+           
             ++counter;
+
         }
-        if (ifound == false) {
-            List<string> Luserinput = userinput.Split(' ').ToList<string>();
-
-
-            for (int i = 0; i < DataBase.Count; i++)
+        Console.WriteLine(KEYposition+"\n");
+        Console.WriteLine("Metoda pomiaru odl. Laventshteina osiagnela podobienstwo=" + oldval + "  wybrane zagadnienie-> " + DataBase[pointer].Key_Sentence + "\n");
+        if (oldval < 0.6 || DataBase[pointer].In_Message[KEYposition].Count()<userinput.Count()/2)
+        {
+            pointer = -1;
+            counter = 0;
+            ifound = false;
+            Console.WriteLine("\nBrutal Force\n");
+            foreach (SynthPair sp in DataBase)
             {
-                int newvalue = StringExpansion.Compare_LStrings(Luserinput, DataBase[i].In_Message);
-                if (oldval < newvalue)
+
+                for (int i = 0; i < sp.In_Message.Count; ++i)
                 {
-                    oldval = newvalue;
-                    pointer = i;
+                    if (userinput.StringLike("%" + sp.In_Message[i] + "%"))
+                    {
+                        ifound = true;
+                        pointer = counter;
+                        if (pointer == 1)
+                        {
+                            string newstr = userinput.Substring(userinput.LastIndexOf(sp.In_Message[i]));
+
+                            int index = newstr.IndexOf(sp.In_Message[i]);
+                            User_Name = (index < 0)
+                                        ? newstr
+                                        : newstr.Remove(index, sp.In_Message[i].Length);
+                        }
+                        if (pointer == 5 || pointer == 8)
+                        {
+                            string newstr = userinput.Substring(userinput.LastIndexOf(sp.In_Message[i]));
+                            int index = newstr.IndexOf(sp.In_Message[i]);
+                            Current_Topic = (index < 0)
+                                        ? newstr
+                                        : newstr.Remove(index, sp.In_Message[i].Length);
+                        }
+                    }
+
+                    if (ifound == true)
+                    {
+                       // Console.WriteLine("\nPOINTER: "+pointer+"\n");
+                        break;
+                    }
+
                 }
+                ++counter;
             }
         }
 
@@ -149,8 +166,14 @@ public class Bot
     {
         //Sprawdzamy ktory input z listy najbardziej pasuje do faktycznego, jakoś działa xD
         string output;
+        userinput = Regex.Replace(userinput, @"\s +", " ");
+        userinput = StringExpansion.Remove_Special_Characters(userinput);
+        int id = -1;
         Random rnd = new Random();
-        int id = Analyse_Input(userinput);
+        if (userinput.Count() > 2)
+        {
+            id = Analyse_Input(userinput);
+        }
         if (Previous_Key == 4 && id==13)
         {
             int num = rnd.Next(DataBase[id].Out_Message.Count);

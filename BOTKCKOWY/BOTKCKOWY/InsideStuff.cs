@@ -27,6 +27,7 @@ public static class StringExpansion
     }
 
 
+
     // wyliczy ile elementów z jednej listy zawiera się w drugiej
     public static int Compare_LStrings(List<string> toCompare, List<string> Compared)
     {
