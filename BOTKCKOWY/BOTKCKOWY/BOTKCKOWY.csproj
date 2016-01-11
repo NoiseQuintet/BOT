@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Bot.cs" />
     <Compile Include="InsideStuff.cs" />
+    <Compile Include="LaventshteinLike.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

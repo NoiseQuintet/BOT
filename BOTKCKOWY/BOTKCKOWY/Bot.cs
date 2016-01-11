@@ -36,12 +36,18 @@ public class Bot
     public string User_Name { get; set; }
     public string Current_Topic { get; set; }
 
-    public Bot(string name)
+     public Bot(string name)
 	{
         Bot_Name = name;
         Set_Data_Base(@"\\files\students\s384122\Desktop\KCK\C# bot\KCKBOT\KCKBOT\Sprechen2.txt");
         Conversation();
 	}
+    ~Bot()
+    {
+        Console.WriteLine("Umieram i już nigdy nie wrócę...");
+        Console.ReadLine();
+    }
+
 
     public void  Get_Data_Base()
     {
@@ -77,6 +83,7 @@ public class Bot
 
     public int Analyse_Input(string userinput)
     {
+        bool PrimeMethod=false;
         bool ifound = false;
         int pointer = -1;
         int oldval = 0;
@@ -183,18 +190,25 @@ public class Bot
     {
         bool i = true;
         Console.Write("Witam waćpana, nazywam się "+Bot_Name +", a Ty ?\n>");
-        while (Current_Input != "quit")
+        while (true)
         {
             Current_Input = Console.ReadLine();
-            if (Current_Input == Previous_Input)
+            if (Current_Input != "quit")
             {
-                Console.WriteLine("Powtarszasz się"  + User_Name);
+                if (Current_Input == Previous_Input)
+                {
+                    Console.WriteLine("Powtarszasz się" + User_Name);
+                }
+                else
+                {
+                    Console.WriteLine(Bot_Respond(Current_Input.ToLower()));
+                }
+                Previous_Input = Current_Input.ToLower();
             }
             else
             {
-                Console.WriteLine(Bot_Respond(Current_Input.ToLower()));
+                break;
             }
-            Previous_Input = Current_Input.ToLower();
         }
         // Console.WriteLine(StringExpansion.Remove_Special_Characters( Current_Input));
         // Get_Data_Base();
