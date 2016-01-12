@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 public struct SynthPair
 {
     //public bool CZYQuestion;
-    public  string Key_Sentence;
-    public  List<string> In_Message;
-    public  List<string> Out_Message;
+    public string Key_Sentence;
+    public List<string> In_Message;
+    public List<string> Out_Message;
 
     public SynthPair(string key, string ines, string outms)
     {
-       // List<string> km = key.Split(';').ToList<string>();
+        // List<string> km = key.Split(';').ToList<string>();
         List<string> ine = ines.Split(';').ToList<string>();
         List<string> outm = outms.Split(';').ToList<string>();
 
@@ -79,131 +79,124 @@ public class Bot
         }
     }
 
-
-
-    public int Analyse_Input(string userinput)
+    public float[] Laventshtein_On_User(string userinput)
     {
-        bool ifound = false;
-        int pointer = -1;
-        float oldval = 0;
-        float similarity = 0;
+        float[] Point_Key_Simi = new float[3] { 0, 0, 0 };
+        int KEY = 0;
+        float newval = 0;
         int counter = 0;
-        int KEYposition = 0;
-        int KEY;
         StringSift2 SS2 = new StringSift2();
         foreach (SynthPair sp in DataBase)
         {
             KEY = 0;
             foreach (string s in sp.In_Message)
             {
-                similarity = SS2.Similarity(userinput, s);
+                newval = SS2.Similarity(userinput, s);
                 /*  Console.WriteLine("KEY: " + s + " USER: " + userinput + " SIMILARITY-> " + SS2.Similarity(s, userinput));
-                  Console.ReadLine();*/
-                if (similarity > oldval)
+                 Console.ReadLine();*/
+                if (newval > Point_Key_Simi[2])
                 {
-                    pointer = counter;
-                    oldval = similarity;
-                    KEYposition = KEY;
+                    Point_Key_Simi[0] = counter;
+                    Point_Key_Simi[1] = KEY;
+                    Point_Key_Simi[2] = newval;
+
                 }
                 ++KEY;
             }
-           
             ++counter;
-
         }
-        Console.WriteLine(KEYposition+"\n");
-        Console.WriteLine("Metoda pomiaru odl. Laventshteina osiagnela podobienstwo=" + oldval + "  wybrane zagadnienie-> " + DataBase[pointer].Key_Sentence + "\n");
-        if (oldval < 0.6 || DataBase[pointer].In_Message[KEYposition].Count()<userinput.Count()/2)
+        Console.WriteLine("Metoda pomiaru odl. Laventshteina osiagnela podobienstwo=" + Point_Key_Simi[2] + "  wybrane zagadnienie-> " + DataBase[(int)Point_Key_Simi[0]].Key_Sentence + " Zgodność z-> " + DataBase[(int)Point_Key_Simi[0]].In_Message[(int)Point_Key_Simi[1]] + "\n");
+        return Point_Key_Simi;
+    }
+
+    public int[] Brutal_Force_Finder(string userinput)
+    {
+        int counter = 0, KEY = 0;
+        bool FirstFound = false;
+        int[] Point_Key = new int[2] { 0, 0 };
+        foreach (SynthPair sp in DataBase)
         {
-            pointer = -1;
-            counter = 0;
-            ifound = false;
-            Console.WriteLine("\nBrutal Force\n");
-            foreach (SynthPair sp in DataBase)
+            KEY = 0;
+            foreach (string s in sp.In_Message)
             {
-
-                for (int i = 0; i < sp.In_Message.Count; ++i)
+                if (userinput.StringLike("%" + s + "%"))
                 {
-                    if (userinput.StringLike("%" + sp.In_Message[i] + "%"))
-                    {
-                        ifound = true;
-                        pointer = counter;
-                        if (pointer == 1)
-                        {
-                            string newstr = userinput.Substring(userinput.LastIndexOf(sp.In_Message[i]));
-
-                            int index = newstr.IndexOf(sp.In_Message[i]);
-                            User_Name = (index < 0)
-                                        ? newstr
-                                        : newstr.Remove(index, sp.In_Message[i].Length);
-                        }
-                        if (pointer == 5 || pointer == 8)
-                        {
-                            string newstr = userinput.Substring(userinput.LastIndexOf(sp.In_Message[i]));
-                            int index = newstr.IndexOf(sp.In_Message[i]);
-                            Current_Topic = (index < 0)
-                                        ? newstr
-                                        : newstr.Remove(index, sp.In_Message[i].Length);
-                        }
-                    }
-
-                    if (ifound == true)
-                    {
-                       // Console.WriteLine("\nPOINTER: "+pointer+"\n");
-                        break;
-                    }
-
+                    FirstFound = true;
+                    Point_Key[0] = counter;
+                    Point_Key[1] = KEY;
                 }
-                ++counter;
+                ++KEY;
             }
+            if (FirstFound == true)
+            {
+                break;
+            }
+            ++counter;
         }
-
-        return pointer;
+        return Point_Key;
     }
 
 
-    public string Bot_Respond (string userinput)
+    public string Bot_Respond(string userinput)
     {
         //Sprawdzamy ktory input z listy najbardziej pasuje do faktycznego, jakoś działa xD
         string output;
+        //obróbka inputu
         userinput = Regex.Replace(userinput, @"\s +", " ");
         userinput = StringExpansion.Remove_Special_Characters(userinput);
-        int id = -1;
+        int id = -1; int key = 0;
+        float[] LV; int[] BF;
+
         Random rnd = new Random();
+        int rndout = 0;
+
+        // ZNAJDUJEMY WSKAŹNIKI (główny i specyficzny) DO ODPOWIEDNIEGO ZAGADNIENIA
         if (userinput.Count() > 2)
         {
-            id = Analyse_Input(userinput);
-        }
-        if (Previous_Key == 4 && id==13)
-        {
-            int num = rnd.Next(DataBase[id].Out_Message.Count);
-            output = DataBase[id].Out_Message[num];
-        }
-        else
-        {
-            
-            if (id == -1 || userinput == "")
+            LV = Laventshtein_On_User(userinput);
+            if (LV[2] < 0.6 || DataBase[(int)LV[0]].In_Message[(int)LV[1]].Count() < userinput.Count() / 4)
             {
-                int num = rnd.Next(DataBase[DataBase.Count - 1].Out_Message.Count);
-                output = DataBase[DataBase.Count - 1].Out_Message[num];
+                Console.WriteLine("\nLaventshtein sie nie powiódł\n");
+                BF = Brutal_Force_Finder(userinput);
+                id = BF[0];
+                key = BF[1];
             }
             else
             {
-                int num = rnd.Next(DataBase[id].Out_Message.Count);
-                output = DataBase[id].Out_Message[num];
+                id = (int)LV[0];
+                key = (int)LV[1];
             }
-            if (id == 0)
+        }
+        //QNIEC
+        int capacity = DataBase.Count();
+        if (id==-1 || userinput == "")
+        {
+            rndout = rnd.Next(DataBase[capacity-1].Out_Message.Count);
+            output = DataBase[capacity - 1].Out_Message[rndout];
+        }
+
+        else if (DataBase[id].Key_Sentence.StringLike("%" + "*"))
+        {
+            string newstr = userinput.Substring(userinput.LastIndexOf(DataBase[id].In_Message[key]));
+            int index = newstr.IndexOf(DataBase[id].In_Message[key]);
+            string topic = (index < 0)
+                                         ? newstr
+                                         : newstr.Remove(index, DataBase[id].In_Message[key].Length);
+           if (id == 1)
             {
-                output = output + " " + Bot_Name;
+                User_Name = topic;
             }
-            else if (id == 1)
+           else
             {
-                output = output + User_Name;
+                Current_Topic = topic;
             }
-            else if (id == 5 || id == 8)
-            {
-                output = output + Current_Topic;
-            }
+            rndout = rnd.Next(DataBase[id].Out_Message.Count);
+            output = DataBase[id].Out_Message[rndout] + topic;
+        }
+        else
+        {
+            rndout = rnd.Next(DataBase[id].Out_Message.Count);
+            output = DataBase[id].Out_Message[rndout];
         }
         Previous_Key = id;
         return output;
@@ -212,7 +205,7 @@ public class Bot
     public bool Conversation()
     {
         bool i = true;
-        Console.Write("Witam waćpana, nazywam się "+Bot_Name +", a Ty ?\n>");
+        Console.Write("Witam waćpana, nazywam się " + Bot_Name + ", a Ty ?\n>");
         while (true)
         {
             Current_Input = Console.ReadLine();
@@ -236,11 +229,11 @@ public class Bot
         // Console.WriteLine(StringExpansion.Remove_Special_Characters( Current_Input));
         // Get_Data_Base();
         //List<string> inp = "uga nuga jak czujesz samo ".Split(' ').ToList<string>();
-       // Console.WriteLine(StringExpansion.Compare_LStrings(inp, DataBase[2].In_Message));
-       // Console.WriteLine(DataBase[2].In_Message[0]);
+        // Console.WriteLine(StringExpansion.Compare_LStrings(inp, DataBase[2].In_Message));
+        // Console.WriteLine(DataBase[2].In_Message[0]);
         return i;
     }
 
-   
+
 
 };
