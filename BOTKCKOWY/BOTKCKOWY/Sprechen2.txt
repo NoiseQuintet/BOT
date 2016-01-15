@@ -1,45 +1,54 @@
-﻿0Przedstawienie
+﻿Xto jak sie nazywam?
 jak sie nazywasz?;jak masz na imie?;jakie masz imie?;powiedz mi swoje imie;mozesz podac mi swoje imie?;podaj mi imie
 Nazywam sie;Mam na imie;Mozesz do mnie mowic;Mozesz na mnie mowic;Mow do mnie
-1Przedstawienie#2
+Xto jak masz na imie *
 nazywam sie;mam na imie;moje imie to
 Witam;Czesc;Siema;Witaj;Dzien dobry
-2Powitanie
+X...chyba sie dopiero witaliśmy
 siema;dzien dobry;czesc;hej;siemano;witaj;witam;yo;szczesc boze;dobry dzionek;dziendoberek; dobry dzien;czolem;halo;siemka
 Witam Waćosobowość;Dzień Dobry;Szczęść Boże;Czee;Witam;Cześć;Siemka
-3Pozegnanie
+Xto że kończyłeś rozmowę... :(
 do widzenia;dobranoc;na razie;do zobaczenia;zegnaj;bywaj;papa;trzymaj sie
 Nara;Bywaj;Z Bogiem;Daswidania;Papa
-4Samopoczucie
-jak sie czujesz?;jak samopoczucie?;jak tam twoje samopoczucie?;jak tam samopoczucie?;co tam slychac?;jak sie masz?; jak z twoim samopoczuciem?;jak ci leci?
+Xtwoje samopoczucie#
+jak sie czujesz?;jak samopoczucie?;jak tam twoje samopoczucie?;jak tam samopoczucie?;co tam slychac?;co u ciebie slychac?;jak sie masz?; jak z twoim samopoczuciem?;jak leci?
 Dobrze, dziekuje, a co u Ciebie?;Tak sobie, ale jakoś się trzymam, a co u Ciebie?
-5Lubie
+Xto co lubisz *
 lubie;kocham;uwielbiam
 Nie wiedzialem ze lubisz;Ja chyba nie lubie;Moja babcia też lubi
-6Hobby
-moje hobby to;w wolnym czasie;w wolnym czasie lubie; w wolnym czasie zajmuje sie;interesuje sie
+XTwoim hobby *M
+moje hobby to;w wolnym czasie;w wolnym czasie lubie; w wolnym czasie zajmuje sie;interesuje sie;moje ulubione hobby to;moim ulubionym hobby jest;moim hobby jest
 Hobby jak hobby;Za to ja uwielbiam rozmawiac;Mam nadzieje ze jestes w tym dobry;Rób to dalej i bądź w tym #1;Trzymam kciuki za Twoje sukcesy
-7Potwierdzenie
+Xto że się z czymś zgadzałem
 oczywiscie;no jasne;jak najbardziej;no ba;jasne że tak
 Rodżer that;Ok, odnotowałem;Spoko, zrozumiałem
-8Jestem
+Xto jak się wtedy czułeś *
 jestem
-Nie wiedzialem że jesteś;Nikomu chyba nie przeszkadza to, że jesteś;Musi Ci być ciężko być; Ja chyba nie chciałbym być
-9Wulgaryzmy
+Nie wiedzialem że jesteś;Nikomu chyba nie przeszkadza to, że jesteś;Musi Ci być ciężko być;Ja chyba nie chciałbym być
+Xjak się wtedy czułeś!
+nie jestem *M
+No cóż, mówi się trudno;Przykro to słyszeć;DEAL WITH IT!;Mam nadzieję że jakoś sobie z tym poradzisz
+Xto że mówiłeś brzydkie rzeczy >.<
 dupa;cycki;kurde
 Nie będę wulgaryzował!!1
-10Hobbyq
+XTwoje hobby?
 co lubisz robic w wolnym;czym sie zajmujesz?;co lubisz robic?;jakie masz hobby?;czym sie interesujesz?
 Lubię kleić pierogi razem z moją wyimaginowaną rodziną;Lubię czytać wpisy na wikipedii.
-11QKsiazka
-jaka jest twoja ulubiona ksiazka?;jaka ksiazke lubisz?;ktora ksiazke lubisz najbardziej?;ktora ksiazke;jaka ksiazke
+Xjakąś książkę?
+jaka jest twoja ulubiona ksiazka?;jaka ksiazke lubisz?;jaka ksiazke lubisz?;ktora ksiazke lubisz najbardziej?;ktora ksiazke;jaka ksiazke
 Moją ulubioną książką jest Brave New World, napisana przez Aldous'a Huxley'a; Uwielbiam Dzieci z Bullerbyn
-12Ksiazka
-moja ulubiona ksiazka;ksiazka ktora lubie najbardziej;najlepsza ksiazka
+Xjakąś książkę *M
+moja ulubiona ksiazka to;ksiazka ktora lubie najbardziej to;najlepsza ksiazka jaka czytalem to
 Jak będę miał czas to może to przeczytam;Pierwszy raz słyszę o czymś takim :D;Nie znam jej, poczekaj chwilę... Ok, już przeczytałem. Niezgorsza.
-13Samopoczucie ODP
-u mnie wszystko w porzadku;jakos leci;nienajgorzej;spoko;u mnie ok;jakos zyje
+XTwoje samopoczucie!#
+u mnie wszystko w porzadku;u mnie ok;u mnie w porzadku;jakos leci;nienajgorzej;spoko;u mnie ok;jakos zyje;daje rade;jest nienajgorzej,dziekuje
 Dobrze to słyszeć.;W takim razie cieszę się;Oby tak dalej!
-Default
+Xo popr16zedni temat rozmowy !!
+o czym rozmawialiśmy?;o czym ostatnio mówiłem?;co było naszym ostatnim tematem?;jaki był poprzedni temat rozmowy?
+Z tego co wiem, chyba chodziło o
+XPamiec MM
+czy pamietasz jaki;czy pamietasz jaka;czy pamietasz co;czy pamietasz jakie
+Chodzi Ci o
+X14Default
 NULL
 Nie panimaju co do mnie mówisz.;Napisz coś normalnego, tego nie rozumiem.;O co Tobie chodzi, bo nie rozumiem?;Nie rozumiem co do mnie godosz;Nie wiem o co Tobie chodzi. Masz tu ziemniaka i zmykaj.;No ten tego, nie zrozumiałem.;Nie wiem o co kaman.;Że co?

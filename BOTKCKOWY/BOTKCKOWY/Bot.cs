@@ -10,9 +10,9 @@ public struct SynthPair
     public List<string> In_Message;
     public List<string> Out_Message;
 
+    //struktura którą wczytujemy z pliku i na której operujemy
     public SynthPair(string key, string ines, string outms)
     {
-        // List<string> km = key.Split(';').ToList<string>();
         List<string> ine = ines.Split(';').ToList<string>();
         List<string> outm = outms.Split(';').ToList<string>();
 
@@ -35,11 +35,15 @@ public class Bot
     public string Bot_Name { get; set; }
     public string User_Name { get; set; }
     public string Current_Topic { get; set; }
+    public string Previous_Topic { get; set; }
+    string[] MEMORY { get; set; }
 
     public Bot(string name)
     {
+        Previous_Key = 0;
         Bot_Name = name;
         Set_Data_Base(@"\\files\students\s384122\Desktop\KCK\C# bot\KCKBOT\KCKBOT\Sprechen2.txt");
+        MEMORY = new string[DataBase.Count()];
         Conversation();
     }
     ~Bot()
@@ -71,10 +75,10 @@ public class Bot
 
     public void Set_Data_Base(string path)
     {
-        string[] text = System.IO.File.ReadAllLines(@"D:\ALLSHIT\C#\KCK\Sprechen2.txt");
+        string[] text = System.IO.File.ReadAllLines(@"C:\Users\Miłosz\Source\Repos\CS_BOT\BOT\BOTKCKOWY\BOTKCKOWY\Sprechen2.txt");
         for (int i = 0; i < text.Length; i += 3)
         {
-            SynthPair s = new SynthPair(text[i], text[i + 1], text[i + 2]);
+            SynthPair s = new SynthPair(text[i].Replace("X",""), text[i + 1], text[i + 2]);
             DataBase.Add(s);
         }
     }
@@ -154,7 +158,7 @@ public class Bot
         if (userinput.Count() > 2)
         {
             LV = Laventshtein_On_User(userinput);
-            if (LV[2] < 0.6 || DataBase[(int)LV[0]].In_Message[(int)LV[1]].Count() < userinput.Count() / 4)
+            if (LV[2] < 0.5 || DataBase[(int)LV[0]].In_Message[(int)LV[1]].Count() < userinput.Count()/5 && !DataBase[(int)LV[0]].Key_Sentence.StringLike("%!"))
             {
                 Console.WriteLine("\nLaventshtein sie nie powiódł\n");
                 BF = Brutal_Force_Finder(userinput);
@@ -169,13 +173,37 @@ public class Bot
         }
         //QNIEC
         int capacity = DataBase.Count();
+        // jeżeli nei znajdziemy matcha to wypisze output z defaultu
         if (id==-1 || userinput == "")
         {
             rndout = rnd.Next(DataBase[capacity-1].Out_Message.Count);
             output = DataBase[capacity - 1].Out_Message[rndout];
         }
-
-        else if (DataBase[id].Key_Sentence.StringLike("%" + "*"))
+        // uwzględniamy imie bota, przy pytaniu użytkownika o imie
+        else if (id == 0)
+        {
+            output = DataBase[id].Out_Message[rndout] +" "+ Bot_Name;
+        }
+        else if (DataBase[id].Key_Sentence.StringLike("%Pamiec%"))
+        {
+            Console.WriteLine("Używam Pamięć ID->"+id + " KEY->"+key);
+            Console.WriteLine(DataBase[id].In_Message[key]);
+            string newstr = userinput.Substring(userinput.LastIndexOf(DataBase[id].In_Message[key]));
+            int index = newstr.IndexOf(DataBase[id].In_Message[key]);
+            string topic = (index < 0)
+                                         ? newstr
+                                         : newstr.Remove(index, DataBase[id].In_Message[key].Length);
+            float[] LVMEM;
+            LVMEM = Laventshtein_On_User(topic);
+            output = DataBase[id].Out_Message[0] + MEMORY[(int)LVMEM[0]] + "?";
+        }
+        // bot przypomina o poprzednim temacie rozmowy
+        else if (DataBase[id].Key_Sentence.StringLike("%" + "!!") && DataBase[Previous_Key].Key_Sentence!="Pamiec")
+        {
+            output= DataBase[id].Out_Message[rndout] + StringExpansion.Remove_Special_Characters(DataBase[Previous_Key].Key_Sentence);
+        }
+        // bot wyłuskuje dane z inputu użytkownika, poda je w outpucie (przy *, przy *M nie wypisze), oraz zapisze do MEMORY
+        else if (DataBase[id].Key_Sentence.StringLike("%" + "*") || DataBase[id].Key_Sentence.StringLike("%" + "*M"))
         {
             string newstr = userinput.Substring(userinput.LastIndexOf(DataBase[id].In_Message[key]));
             int index = newstr.IndexOf(DataBase[id].In_Message[key]);
@@ -188,11 +216,23 @@ public class Bot
             }
            else
             {
+                Previous_Topic = Current_Topic;
                 Current_Topic = topic;
             }
             rndout = rnd.Next(DataBase[id].Out_Message.Count);
-            output = DataBase[id].Out_Message[rndout] + topic;
+            if (DataBase[id].Key_Sentence.StringLike("%" + "*"))
+            {
+                output = DataBase[id].Out_Message[rndout] + topic;
+            }
+           else  
+            {
+                output = DataBase[id].Out_Message[rndout];
+            }
+             MEMORY[id] = topic;
+            Console.WriteLine("zapisałem w pamięci->"+topic);
         }
+
+        // wypisanie tekstu, bez uwzględniania danych
         else
         {
             rndout = rnd.Next(DataBase[id].Out_Message.Count);
