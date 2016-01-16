@@ -20,7 +20,7 @@ XTwoim hobby *M
 moje hobby to;w wolnym czasie;w wolnym czasie lubie; w wolnym czasie zajmuje sie;interesuje sie;moje ulubione hobby to;moim ulubionym hobby jest;moim hobby jest
 Hobby jak hobby;Za to ja uwielbiam rozmawiac;Mam nadzieje ze jestes w tym dobry;Rób to dalej i bądź w tym #1;Trzymam kciuki za Twoje sukcesy
 Xto że się z czymś zgadzałem
-oczywiscie;no jasne;jak najbardziej;no ba;jasne że tak
+oczywiscie;no jasne;jak najbardziej;no ba;jasne że tak;tak
 Rodżer that;Ok, odnotowałem;Spoko, zrozumiałem
 Xto jak się wtedy czułeś *
 jestem
@@ -31,24 +31,36 @@ No cóż, mówi się trudno;Przykro to słyszeć;DEAL WITH IT!;Mam nadzieję że
 Xto że mówiłeś brzydkie rzeczy >.<
 dupa;cycki;kurde
 Nie będę wulgaryzował!!1
-XTwoje hobby?
+XTwoje hobby? ODP
 co lubisz robic w wolnym;czym sie zajmujesz?;co lubisz robic?;jakie masz hobby?;czym sie interesujesz?
 Lubię kleić pierogi razem z moją wyimaginowaną rodziną;Lubię czytać wpisy na wikipedii.
-Xjakąś książkę?
+Xjakąś książkę? ODP
 jaka jest twoja ulubiona ksiazka?;jaka ksiazke lubisz?;jaka ksiazke lubisz?;ktora ksiazke lubisz najbardziej?;ktora ksiazke;jaka ksiazke
 Moją ulubioną książką jest Brave New World, napisana przez Aldous'a Huxley'a; Uwielbiam Dzieci z Bullerbyn
-Xjakąś książkę *M
-moja ulubiona ksiazka to;ksiazka ktora lubie najbardziej to;najlepsza ksiazka jaka czytalem to
+Xjakąś fajną książkę *M
+moja ulubiona ksiazka to;ksiazka ktora lubie najbardziej to;najlepsza ksiazka jaka czytalem to;moja ulubiona książka
 Jak będę miał czas to może to przeczytam;Pierwszy raz słyszę o czymś takim :D;Nie znam jej, poczekaj chwilę... Ok, już przeczytałem. Niezgorsza.
+Xjakiś film *M
+moj ulubiony film to;najbardziej podobal mi sie film;film ktory mi sie najbardziej podobal to;najlepszy film jaki ogladalem to
+Oglądaaaałem, toż to klasyka;Niezgorszy, niezgorszy
+Xjakiś ulubiony film? *M ODP
+jaki jest twoj ulubiony film?;jaki film ci sie najbardziej podobal?;jaki film jest według Ciebie najlepszy?;jaki jest najlepszy film jaki widziales?
+Najlepszy film jaki oglądałem to "PI" w reżyserii Darrena Aronofsky'ego
 XTwoje samopoczucie!#
 u mnie wszystko w porzadku;u mnie ok;u mnie w porzadku;jakos leci;nienajgorzej;spoko;u mnie ok;jakos zyje;daje rade;jest nienajgorzej,dziekuje
-Dobrze to słyszeć.;W takim razie cieszę się;Oby tak dalej!
-Xo popr16zedni temat rozmowy !!
+Dobrze to słyszeć.;W takim razie cieszę się :);Oby tak dalej ;>!
+Xo to że mnie nie rozumiałeś
+nie rozumiem;nie wiem o co ci chodzi;nie mam pojecia
+Ja też;To chyba mamy IMPAS, joł;Mówi się trudno i idzie się na przód;To masz problem, joł;To zrozum bałwanie...
+Xo poprzedni temat rozmowy !!
 o czym rozmawialiśmy?;o czym ostatnio mówiłem?;co było naszym ostatnim tematem?;jaki był poprzedni temat rozmowy?
 Z tego co wiem, chyba chodziło o
+XDlaczego ???
+dlaczego?
+NULL
 XPamiec MM
-czy pamietasz jaki;czy pamietasz jaka;czy pamietasz co;czy pamietasz jakie
+czy pamietasz jaki;czy pamietasz jaka;czy pamietasz co;czy pamietasz jakie;czy pamietasz jaka jest;czy pamietasz jak;czy wiesz jakie jest;czy pamietasz jakie jest;czy pamietasz jak mam
 Chodzi Ci o
-X14Default
+XDefault
 NULL
 Nie panimaju co do mnie mówisz.;Napisz coś normalnego, tego nie rozumiem.;O co Tobie chodzi, bo nie rozumiem?;Nie rozumiem co do mnie godosz;Nie wiem o co Tobie chodzi. Masz tu ziemniaka i zmykaj.;No ten tego, nie zrozumiałem.;Nie wiem o co kaman.;Że co?

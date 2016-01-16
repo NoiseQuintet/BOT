@@ -15,9 +15,11 @@ public struct SynthPair
     {
         List<string> ine = ines.Split(';').ToList<string>();
         List<string> outm = outms.Split(';').ToList<string>();
-
+        //KEY to klucz po którym rozpoznajemy kontekst gdy user zadaje pytanie "czy pamietasz..."
         this.Key_Sentence = key;
+        // Przykladowe inputy usera
         this.In_Message = ine;
+        //Przykladowe Outputy
         this.Out_Message = outm;
 
     }
@@ -26,7 +28,6 @@ public struct SynthPair
 
 public class Bot
 {
-
     public string Current_Input { get; set; }
     public string Previous_Input { get; set; }
     public string Bot_Previous_Input { get; set; }
@@ -52,7 +53,7 @@ public class Bot
         Console.ReadLine();
     }
 
-
+    //Wypisuje całą baze danych z pamięci
     public void Get_Data_Base()
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -72,7 +73,7 @@ public class Bot
             }
         }
     }
-
+    // wczytuje do pamięci słownik
     public void Set_Data_Base(string path)
     {
         string[] text = System.IO.File.ReadAllLines(@"C:\Users\Miłosz\Source\Repos\CS_BOT\BOT\BOTKCKOWY\BOTKCKOWY\Sprechen2.txt");
@@ -82,7 +83,7 @@ public class Bot
             DataBase.Add(s);
         }
     }
-
+    //zwraca podobieństwo stringów wedle miary LV
     public float[] Laventshtein_On_User(string userinput)
     {
         float[] Point_Key_Simi = new float[3] { 0, 0, 0 };
@@ -113,6 +114,7 @@ public class Bot
         return Point_Key_Simi;
     }
 
+    // SQL-owy like na stringu, szukamy podobienstwa userinputu w IN_Message
     public int[] Brutal_Force_Finder(string userinput)
     {
         int counter = 0, KEY = 0;
@@ -139,8 +141,29 @@ public class Bot
         }
         return Point_Key;
     }
+    /*
+    Obie funkcje zwracają tablicę, któa wskazuje na indeks KEY w Bazie danych, na najbardziej podony przykladowy input w In_Key_MSG, a dodatkowo funkcja LV zwraca podobieństwo do tego inputu
 
+    */
+    // Analiza inputu usera, wykorzystujemy funkcje Brutal_force_finder i Laventshtein_on_user
 
+    public string Why_MODE(string userinput)
+    {
+        string output;
+        if (userinput.StringLike("%ksiazk%"))
+        {
+            output = "Fabuła była interesująca i ogólnie miło się to czytało.";
+        }
+        else if (userinput.StringLike("%film%")){
+            output = "Swietna fabuła, interesująca akcja i genialny główny wątek!";
+        }
+        else
+        {
+            output = "THAT'S THE WAY I AM";
+        }
+
+        return output;
+    }
     public string Bot_Respond(string userinput)
     {
         //Sprawdzamy ktory input z listy najbardziej pasuje do faktycznego, jakoś działa xD
@@ -149,99 +172,128 @@ public class Bot
         userinput = Regex.Replace(userinput, @"\s +", " ");
         userinput = StringExpansion.Remove_Special_Characters(userinput);
         int id = -1; int key = 0;
-        float[] LV; int[] BF;
 
-        Random rnd = new Random();
-        int rndout = 0;
-
-        // ZNAJDUJEMY WSKAŹNIKI (główny i specyficzny) DO ODPOWIEDNIEGO ZAGADNIENIA
-        if (userinput.Count() > 2)
+        if (userinput.StringLike("%dlaczego%"))
         {
-            LV = Laventshtein_On_User(userinput);
-            if (LV[2] < 0.5 || DataBase[(int)LV[0]].In_Message[(int)LV[1]].Count() < userinput.Count()/5 && !DataBase[(int)LV[0]].Key_Sentence.StringLike("%!"))
+
+            id = DataBase.Count() - 3;
+
+            if (DataBase[Previous_Key].Key_Sentence.StringLike("%ODP%"))
             {
-                Console.WriteLine("\nLaventshtein sie nie powiódł\n");
-                BF = Brutal_Force_Finder(userinput);
-                id = BF[0];
-                key = BF[1];
+                output = Why_MODE(userinput);
+              
             }
             else
             {
-                id = (int)LV[0];
-                key = (int)LV[1];
+                output = "Bo tak";
             }
         }
-        //QNIEC
-        int capacity = DataBase.Count();
-        // jeżeli nei znajdziemy matcha to wypisze output z defaultu
-        if (id==-1 || userinput == "")
-        {
-            rndout = rnd.Next(DataBase[capacity-1].Out_Message.Count);
-            output = DataBase[capacity - 1].Out_Message[rndout];
-        }
-        // uwzględniamy imie bota, przy pytaniu użytkownika o imie
-        else if (id == 0)
-        {
-            output = DataBase[id].Out_Message[rndout] +" "+ Bot_Name;
-        }
-        else if (DataBase[id].Key_Sentence.StringLike("%Pamiec%"))
-        {
-            Console.WriteLine("Używam Pamięć ID->"+id + " KEY->"+key);
-            Console.WriteLine(DataBase[id].In_Message[key]);
-            string newstr = userinput.Substring(userinput.LastIndexOf(DataBase[id].In_Message[key]));
-            int index = newstr.IndexOf(DataBase[id].In_Message[key]);
-            string topic = (index < 0)
-                                         ? newstr
-                                         : newstr.Remove(index, DataBase[id].In_Message[key].Length);
-            float[] LVMEM;
-            LVMEM = Laventshtein_On_User(topic);
-            output = DataBase[id].Out_Message[0] + MEMORY[(int)LVMEM[0]] + "?";
-        }
-        // bot przypomina o poprzednim temacie rozmowy
-        else if (DataBase[id].Key_Sentence.StringLike("%" + "!!") && DataBase[Previous_Key].Key_Sentence!="Pamiec")
-        {
-            output= DataBase[id].Out_Message[rndout] + StringExpansion.Remove_Special_Characters(DataBase[Previous_Key].Key_Sentence);
-        }
-        // bot wyłuskuje dane z inputu użytkownika, poda je w outpucie (przy *, przy *M nie wypisze), oraz zapisze do MEMORY
-        else if (DataBase[id].Key_Sentence.StringLike("%" + "*") || DataBase[id].Key_Sentence.StringLike("%" + "*M"))
-        {
-            string newstr = userinput.Substring(userinput.LastIndexOf(DataBase[id].In_Message[key]));
-            int index = newstr.IndexOf(DataBase[id].In_Message[key]);
-            string topic = (index < 0)
-                                         ? newstr
-                                         : newstr.Remove(index, DataBase[id].In_Message[key].Length);
-           if (id == 1)
-            {
-                User_Name = topic;
-            }
-           else
-            {
-                Previous_Topic = Current_Topic;
-                Current_Topic = topic;
-            }
-            rndout = rnd.Next(DataBase[id].Out_Message.Count);
-            if (DataBase[id].Key_Sentence.StringLike("%" + "*"))
-            {
-                output = DataBase[id].Out_Message[rndout] + topic;
-            }
-           else  
-            {
-                output = DataBase[id].Out_Message[rndout];
-            }
-             MEMORY[id] = topic;
-            Console.WriteLine("zapisałem w pamięci->"+topic);
-        }
-
-        // wypisanie tekstu, bez uwzględniania danych
         else
         {
-            rndout = rnd.Next(DataBase[id].Out_Message.Count);
-            output = DataBase[id].Out_Message[rndout];
+            float[] LV; int[] BF;
+            Random rnd = new Random();
+            int rndout = 0;
+            // ZNAJDUJEMY WSKAŹNIKI (główny i specyficzny) DO ODPOWIEDNIEGO ZAGADNIENIA
+            if (userinput.Count() > 2)
+            {
+                LV = Laventshtein_On_User(userinput);
+                if (LV[2] < 0.45 || DataBase[(int)LV[0]].In_Message[(int)LV[1]].Count() < userinput.Count() / 5 && !DataBase[(int)LV[0]].Key_Sentence.StringLike("%!"))
+                {
+                    Console.WriteLine("\nLaventshtein sie nie powiódł\n");
+                    BF = Brutal_Force_Finder(userinput);
+                    id = BF[0];
+                    key = BF[1];
+                }
+                else
+                {
+                    id = (int)LV[0];
+                    key = (int)LV[1];
+                }
+            }
+            //QNIEC
+            int capacity = DataBase.Count();
+            // jeżeli nei znajdziemy matcha to wypisze output z defaultu
+            if (id == -1 || userinput == "")
+            {
+                rndout = rnd.Next(DataBase[capacity - 1].Out_Message.Count);
+                output = DataBase[capacity - 1].Out_Message[rndout];
+            }
+            // uwzględniamy imie bota, przy pytaniu użytkownika o imie
+            else if (id == 0)
+            {
+                output = DataBase[id].Out_Message[rndout] + " " + Bot_Name;
+            }
+            // przy pytaniu typu "czy pamietasz" korzystamy z pamięci bota
+            else if (DataBase[id].Key_Sentence.StringLike("%Pamiec%"))
+            {
+                Console.WriteLine("Używam Pamięć ID->" + id + " KEY->" + key);
+                Console.WriteLine(DataBase[id].In_Message[key]);
+                //  string newstr = userinput.Substring(userinput.LastIndexOf(DataBase[id].In_Message[key]));
+                //wyłuskujemy topic-> czyli usuwamy wszystko co user powiedział, oprócz tego co jest PO pasującym IN_Message
+                int index = userinput.IndexOf(DataBase[id].In_Message[key]);
+                string topic = (index < 0)
+                                             ? userinput
+                                             : userinput.Remove(index, DataBase[id].In_Message[key].Length);
+                float[] LVMEM;
+                LVMEM = Laventshtein_On_User(topic);
+                Console.WriteLine(MEMORY[(int)LVMEM[0]]);
+                if (MEMORY[(int)LVMEM[0]] != null)
+                {
+                    output = DataBase[id].Out_Message[0] + MEMORY[(int)LVMEM[0]] + "?";
+                }
+
+                else
+                {
+                    output = "Niestety nie pamiętam... :(";
+                }
+            }
+            // bot przypomina o poprzednim temacie rozmowy
+            else if (DataBase[id].Key_Sentence.StringLike("%" + "!!") && DataBase[Previous_Key].Key_Sentence != "Pamiec")
+            {
+                output = DataBase[id].Out_Message[rndout] + StringExpansion.Remove_Special_Characters(DataBase[Previous_Key].Key_Sentence);
+            }
+            // bot wyłuskuje dane z inputu użytkownika, poda je w outpucie (przy *, przy *M nie wypisze), oraz zapisze do MEMORY
+            else if (DataBase[id].Key_Sentence.StringLike("%" + "*") || DataBase[id].Key_Sentence.StringLike("%" + "*M"))
+            {
+                //string newstr = userinput.Substring(userinput.LastIndexOf(DataBase[id].In_Message[key]));
+                int index = userinput.IndexOf(DataBase[id].In_Message[key]);
+                string topic = (index < 0)
+                                             ? userinput
+                                             : userinput.Remove(index, DataBase[id].In_Message[key].Length);
+                if (id == 1)
+                {
+                    User_Name = topic;
+                }
+                else
+                {
+                    Previous_Topic = Current_Topic;
+                    Current_Topic = topic;
+                }
+                rndout = rnd.Next(DataBase[id].Out_Message.Count);
+                if (DataBase[id].Key_Sentence.StringLike("%" + "*"))
+                {
+                    output = DataBase[id].Out_Message[rndout] + topic;
+                }
+                else
+                {
+                    output = DataBase[id].Out_Message[rndout];
+                }
+                MEMORY[id] = topic;
+                Console.WriteLine("zapisałem w pamięci->" + MEMORY[id] + " id->" + id);
+            }
+
+            // wypisanie tekstu, bez uwzględniania danych
+            else
+            {
+                rndout = rnd.Next(DataBase[id].Out_Message.Count);
+                output = DataBase[id].Out_Message[rndout];
+            }
         }
         Previous_Key = id;
         return output;
     }
 
+    //zaczyna konwersację
     public bool Conversation()
     {
         bool i = true;
