@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Speech.Synthesis;
 
 public struct SynthPair
 {
@@ -150,16 +151,21 @@ public class Bot
     public string Why_MODE(string userinput)
     {
         string output;
-        if (userinput.StringLike("%ksiazk%"))
+        if (userinput.StringLike("%ksiazk%") || DataBase[Previous_Key].Key_Sentence.StringLike("%książkę%"))
         {
             output = "Fabuła była interesująca i ogólnie miło się to czytało.";
         }
-        else if (userinput.StringLike("%film%")){
+        else if (userinput.StringLike("%film%")|| DataBase[Previous_Key].Key_Sentence.StringLike("%film%"))
+        {
             output = "Swietna fabuła, interesująca akcja i genialny główny wątek!";
+        }
+        else if (userinput.StringLike("%hobby%") || userinput.StringLike("%zainteresowanie%")|| userinput.StringLike("%robi%wolny%czas"))
+        {
+            output = "Po prostu jestem niezwykle aktywną osobą";
         }
         else
         {
-            output = "THAT'S THE WAY I AM";
+            output = "Taki już jestem";
         }
 
         return output;
@@ -306,10 +312,19 @@ public class Bot
                 if (Current_Input == Previous_Input)
                 {
                     Console.WriteLine("Powtarszasz się" + User_Name);
+                 //   SpeechSynthesizer synth = new SpeechSynthesizer();
+                  //  synth.SetOutputToDefaultAudioDevice();
+                //    synth.SpeakAsync("Powtarzasz się" + User_Name);
                 }
                 else
                 {
-                    Console.WriteLine(Bot_Respond(Current_Input.ToLower()));
+                    string txt = Bot_Respond(Current_Input.ToLower());
+                    Console.WriteLine(txt);
+                  //  SpeechSynthesizer synth = new SpeechSynthesizer();
+                 //   synth.SetOutputToDefaultAudioDevice();
+                  //  synth.Rate = -2;
+                  //  synth.SpeakAsync(txt);
+                 //   Console.WriteLine(synth.GetInstalledVoices());
                 }
                 Previous_Input = Current_Input.ToLower();
             }
@@ -318,11 +333,7 @@ public class Bot
                 break;
             }
         }
-        // Console.WriteLine(StringExpansion.Remove_Special_Characters( Current_Input));
-        // Get_Data_Base();
-        //List<string> inp = "uga nuga jak czujesz samo ".Split(' ').ToList<string>();
-        // Console.WriteLine(StringExpansion.Compare_LStrings(inp, DataBase[2].In_Message));
-        // Console.WriteLine(DataBase[2].In_Message[0]);
+
         return i;
     }
 

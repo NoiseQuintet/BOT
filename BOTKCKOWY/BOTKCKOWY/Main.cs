@@ -8,7 +8,7 @@ namespace KCK_BOT
        static string Input;
         static void Main(string[] args)
         {
-            Bot Bot = new Bot("Czarek");
+            Bot Bot = new Bot("Genowefa Grzebinoga");
             StringSift2 SS2 = new StringSift2();
            Console.WriteLine( SS2.Similarity("Zjem Cie Noobie","Zjem cie st"));
             Console.ReadLine();
